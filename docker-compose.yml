@@ -1,0 +1,41 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'trackmania'
+      MYSQL_USER: 'trackmania'
+      MYSQL_PASSWORD: 'trackmania'
+      MYSQL_RANDOM_ROOT_PASSWORD: 'y'
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - tm_net
+
+  tm-evo:
+    build: evo-dockerfile
+    restart: always
+    environment:
+      GAME_SETTINGS: 'tracklist.txt'
+      CONFIG: 'dedicated_cfg.txt'
+    ports:
+      - '2350:2350'
+      - '2350:2350/udp'
+    volumes:
+      - ./tm-config:/app/UserData/Config
+      - ./tm-maps:/app/UserData/Maps
+      - ./evo-config:/app/config
+###	Mirrors a specific config file as the server.config.json,
+###	to be used for mutiple server instances
+#      - ${PWD}/evo-config/specific-server.config.json:/app/config/server.config.json
+      - ./logs:/app/Logs
+    depends_on:
+      - db
+    networks:
+      - tm_net
+
+networks:
+  tm_net:
+    driver: bridge

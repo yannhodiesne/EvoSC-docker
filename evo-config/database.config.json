@@ -1,0 +1,7 @@
+{
+    "host": "db:3306",
+    "db": "trackmania",
+    "user": "trackmania",
+    "password": "trackmania",
+    "prefix": ""
+}
